@@ -1,0 +1,237 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialActions"]
+  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+
+  @@map("user_role")
+}
+
+enum RequestType {
+  NULL
+  DRY_CLEANING
+  WASH
+
+  @@map("request_type")
+}
+
+enum Status {
+  PUBLISHED
+  HIDDEN
+
+  @@map("status")
+}
+
+enum PaymentMethod {
+  YOOKASSA
+
+  @@map("payment_method")
+}
+
+enum OrderStatus {
+  PENDING // Ожидание оплаты
+  IN_PROCESS // Заказ в процессе
+  ON_HOLD // Заказ на удержании
+  COMPLETED // Заказ закончен успешно
+  CANCELED // Заказ отменен
+  REFUNDED // Возврат средств
+
+  @@map("order_status")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  login      String @unique
+  email      String @unique
+  password   String
+  avatarPath String @default("/uploads/users/no-user.png") @map("avatar_path")
+
+  role UserRole @default(USER)
+
+  cart Service[]
+
+  @@map("user")
+}
+
+model Rubric {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name String @unique
+  slug String @unique
+
+  imagePath String @map("image_path")
+
+  categories Category[]
+
+  status Status @default(HIDDEN)
+
+  @@map("rubric")
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name String @unique
+  slug String @unique
+
+  imagePath       String @map("image_path")
+  backgroundColor String @map("background_color")
+
+  priceFrom Int @map("price_from")
+
+  groups  Group[]
+  rubrics Rubric[]
+
+  status Status @default(HIDDEN)
+
+  @@map("category")
+}
+
+model Group {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name String @unique
+  slug String @unique
+
+  imagePath String @map("image_path")
+
+  services   Service[]
+  categories Category[]
+
+  status Status @default(HIDDEN)
+
+  @@map("group")
+}
+
+model Service {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name        String @unique
+  slug        String @unique
+  description String
+  term        String
+  price       Int
+  imagePath   String @map("image_path")
+
+  status Status @default(HIDDEN)
+
+  orderItems OrderItem[]
+  groups     Group[]
+
+  user       User?       @relation(fields: [userId], references: [id])
+  userId     Int? @map("user_id")
+
+  @@map("service")
+}
+
+model Advantage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name        String @unique
+  slug        String @unique
+  description String
+  imagePath   String @map("image_path")
+  status      Status @default(HIDDEN)
+
+  @@map("advantage")
+}
+
+model Offer {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  sale            Int
+  description     String
+  about           String
+  imagePath       String @map("image_path")
+  color           String
+  backgroundColor String @map("background_color")
+  status          Status @default(HIDDEN)
+
+  @@map("offer")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  author       String
+  authorAvatar String @map("author_avatar")
+  rating       Int
+  review       String
+  date         String
+  status       Status @default(HIDDEN)
+
+  @@map("review")
+}
+
+model Request {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name  String
+  phone String
+
+  type   RequestType
+  status Status      @default(HIDDEN)
+
+  @@map("request")
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  orderStatus OrderStatus   @default(PENDING) @map("order_status")
+  total       Int
+
+  name  String
+  phone String
+
+  items OrderItem[]
+
+  @@map("order")
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  quantity Int
+
+  service  Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId Int   @map("order_id")
+
+  serviceId Int @map("service_id")
+
+  @@map("order_item")
+}

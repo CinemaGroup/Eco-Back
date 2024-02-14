@@ -1,0 +1,419 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Advantage {
+  createdAt: DateTime!
+  description: String!
+  id: Int!
+  imagePath: String!
+  name: String!
+  slug: String!
+  status: Status!
+  updatedAt: DateTime!
+}
+
+input AuthLoginInput {
+  loginOrEmail: String!
+  password: String!
+}
+
+input AuthRegisterInput {
+  email: String!
+  login: String!
+  password: String!
+}
+
+type AuthResponse {
+  accessToken: String!
+  user: User!
+}
+
+type Category {
+  backgroundColor: String!
+  createdAt: DateTime!
+  groups: [Group!]!
+  id: Int!
+  imagePath: String!
+  name: String!
+  priceFrom: Int!
+  rubrics: [Rubric!]!
+  slug: String!
+  status: Status!
+  updatedAt: DateTime!
+}
+
+input CreateFolderInput {
+  folderPath: String!
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input EditFileOrFolderNameInput {
+  newPath: String!
+  oldPath: String!
+}
+
+type File {
+  createdAt: DateTime!
+  extension: String!
+  name: String!
+  path: String!
+  size: String!
+}
+
+type Folder {
+  count: Int!
+  createdAt: DateTime!
+  name: String!
+  path: String!
+  size: String!
+}
+
+input GetCategoryPriceInput {
+  quantity: Int!
+  slug: String!
+}
+
+type Group {
+  categories: [Category!]!
+  createdAt: DateTime!
+  id: Int!
+  imagePath: String!
+  name: String!
+  services: [Service!]!
+  slug: String!
+  status: Status!
+  updatedAt: DateTime!
+}
+
+type Mutation {
+  categoryPrice(data: GetCategoryPriceInput!): Int!
+  createAdvantage: Advantage!
+  createCategory: Category!
+  createFolder(data: CreateFolderInput!): String!
+  createGroup: Group!
+  createOffer: Offer!
+  createReview: Review!
+  createRubric: Rubric!
+  createService: Service!
+  deleteAdvantage(id: Int!): Advantage!
+  deleteCategory(id: Int!): Category!
+  deleteFileOrFolder(path: String!): String!
+  deleteGroup(id: Int!): Group!
+  deleteOffer(id: Int!): Offer!
+  deleteOrder(id: Int!): Order!
+  deleteRequest(id: Int!): Request!
+  deleteReview(id: Int!): Review!
+  deleteRubric(id: Int!): Rubric!
+  deleteService(id: Int!): Service!
+  editFileOrFolderName(data: EditFileOrFolderNameInput!): String!
+  login(data: AuthLoginInput!): AuthResponse!
+  logout: Boolean!
+  newTokens: AuthResponse!
+  placeOrder(data: PlaceOrderInput!): Order!
+  register(data: AuthRegisterInput!): AuthResponse!
+  sendRequests(data: RequestInput!): Request!
+  toggleAdvantage(id: Int!): Advantage!
+  toggleCategory(id: Int!): Category!
+  toggleGroup(id: Int!): Group!
+  toggleOffer(id: Int!): Offer!
+  toggleReview(id: Int!): Review!
+  toggleRubric(id: Int!): Rubric!
+  toggleService(id: Int!): Service!
+  updateAdvantage(data: UpdateAdvantageInput!, id: Int!): Advantage!
+  updateCategory(data: UpdateCategoryInput!, id: Int!): Category!
+  updateGroup(data: UpdateGroupInput!, id: Int!): Group!
+  updateOffer(data: UpdateOfferInput!, id: Int!): Offer!
+  updateOrder(data: UpdateOrderInput!, id: Int!): Order!
+  updateRequest(data: RequestInput!, id: Int!): Request!
+  updateReview(data: UpdateReviewInput!, id: Int!): Review!
+  updateRubric(data: UpdateRubricInput!, id: Int!): Rubric!
+  updateService(data: UpdateServiceInput!, id: Int!): Service!
+  uploadFiles(data: UploadFilesInput!): String!
+}
+
+type Offer {
+  about: String!
+  backgroundColor: String!
+  color: String!
+  createdAt: DateTime!
+  description: String!
+  id: Int!
+  imagePath: String!
+  sale: Int!
+  status: Status!
+  updatedAt: DateTime!
+}
+
+type Order {
+  createdAt: DateTime!
+  id: Int!
+  items: [OrderItem!]!
+  name: String!
+  orderStatus: OrderStatus!
+  phone: String!
+  total: Int!
+  updatedAt: DateTime!
+  user: User!
+  userId: Int!
+}
+
+type OrderItem {
+  createdAt: DateTime!
+  id: Int!
+  order: Order!
+  orderId: Int!
+  quantity: Int!
+  service: Service!
+  updatedAt: DateTime!
+}
+
+enum OrderStatus {
+  CANCELED
+  COMPLETED
+  IN_PROCESS
+  ON_HOLD
+  PENDING
+  REFUNDED
+}
+
+input PlaceOrderInput {
+  items: [PlaceOrderItemInput!]!
+  name: String!
+  orderStatus: OrderStatus!
+  phone: String!
+  total: Int!
+}
+
+input PlaceOrderItemInput {
+  quantity: Int!
+  serviceId: Int!
+}
+
+type Query {
+  advantageById(id: Int!): Advantage!
+  advantages(query: QueryInput!): [Advantage!]!
+  categories(query: QueryInput!): [Category!]!
+  categoryById(id: Int!): Category!
+  categoryBySlug(slug: String!): Category!
+  folderItems(folderPath: String!): StorageItem!
+  groupById(id: Int!): Group!
+  groups(query: QueryGroupInput!): [Group!]!
+  offerById(id: Int!): Offer!
+  offers(query: QueryInput!): [Offer!]!
+  orderById(id: Int!): Order!
+  orders(query: QueryOrderInput!): [Order!]!
+  profile: User!
+  requestById(id: Int!): Request!
+  requests(query: QueryRequestInput!): [Request!]!
+  reviewById(id: Int!): Review!
+  reviews(query: QueryInput!): [Review!]!
+  rubricById(id: Int!): Rubric!
+  rubrics(query: QueryInput!, type: String): [Rubric!]!
+  serviceById(id: Int!): Service!
+  services(query: QueryInput!): [Service!]!
+}
+
+input QueryGroupInput {
+  categorySlug: String
+  page: String
+  perPage: String
+  searchTerm: String
+  sort: Sort!
+  status: Status
+}
+
+input QueryInput {
+  page: String
+  perPage: String
+  searchTerm: String
+  sort: Sort!
+  status: Status
+}
+
+input QueryOrderInput {
+  page: String
+  perPage: String
+  searchTerm: String
+  sort: Sort!
+}
+
+input QueryRequestInput {
+  page: String
+  perPage: String
+  searchTerm: String
+  sort: Sort
+}
+
+type Request {
+  createdAt: DateTime!
+  id: Int!
+  name: String!
+  phone: String!
+  type: RequestType!
+  updatedAt: DateTime!
+}
+
+input RequestInput {
+  name: String!
+  phone: String
+  type: String!
+}
+
+enum RequestType {
+  DRY_CLEANING
+  NULL
+  WASH
+}
+
+type Review {
+  author: String!
+  authorAvatar: String!
+  createdAt: DateTime!
+  date: String!
+  id: Int!
+  rating: Int!
+  review: String!
+  status: Status!
+  updatedAt: DateTime!
+}
+
+type Rubric {
+  categories: [Category!]!
+  createdAt: DateTime!
+  id: Int!
+  imagePath: String!
+  name: String!
+  slug: String!
+  status: Status!
+  updatedAt: DateTime!
+}
+
+type Service {
+  createdAt: DateTime!
+  description: String!
+  groups: [Group!]!
+  id: Int!
+  imagePath: String!
+  name: String!
+  orderItems: [OrderItem!]!
+  price: Int!
+  slug: String!
+  status: Status!
+  term: String!
+  updatedAt: DateTime!
+}
+
+enum Sort {
+  NEWEST
+  OLDEST
+}
+
+enum Status {
+  HIDDEN
+  PUBLISHED
+}
+
+type StorageItem {
+  files: [File!]!
+  folders: [Folder!]!
+}
+
+input UpdateAdvantageInput {
+  description: String!
+  imagePath: String!
+  name: String!
+}
+
+input UpdateCategoryInput {
+  backgroundColor: String!
+  imagePath: String!
+  name: String!
+  priceFrom: Int!
+  rubrics: [UpdateCategoryRubricInput!]!
+}
+
+input UpdateCategoryRubricInput {
+  id: Int!
+  name: String!
+}
+
+input UpdateGroupCategoryInput {
+  id: Int!
+  name: String!
+}
+
+input UpdateGroupInput {
+  categories: [UpdateGroupCategoryInput!]!
+  imagePath: String!
+  name: String!
+}
+
+input UpdateOfferInput {
+  about: String!
+  backgroundColor: String!
+  color: String!
+  description: String!
+  imagePath: String!
+  sale: Int!
+}
+
+input UpdateOrderInput {
+  orderStatus: OrderStatus!
+}
+
+input UpdateReviewInput {
+  author: String!
+  authorAvatar: String!
+  date: String!
+  rating: Int!
+  review: String!
+}
+
+input UpdateRubricInput {
+  imagePath: String!
+  name: String!
+}
+
+input UpdateServiceGroupInput {
+  id: Int!
+  name: String!
+}
+
+input UpdateServiceInput {
+  description: String!
+  groups: [UpdateServiceGroupInput!]!
+  imagePath: String!
+  name: String!
+  price: Int!
+  term: String!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input UploadFilesInput {
+  data: [Upload!]!
+  folderPath: String!
+}
+
+type User {
+  avatarPath: String!
+  createdAt: DateTime!
+  email: String!
+  id: Int!
+  login: String!
+  password: String!
+  role: UserRole!
+  updatedAt: DateTime!
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
