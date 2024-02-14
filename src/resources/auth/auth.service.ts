@@ -129,7 +129,6 @@ export class AuthService {
 
 		res.cookie(EnumTokens.REFRESH_TOKEN, refreshToken, {
 			httpOnly: true,
-			domain: process.env.DOMAIN,
 			expires: expiresIn,
 			secure: isProd(this.configService),
 			sameSite: 'none',
