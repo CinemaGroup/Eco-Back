@@ -1,8 +1,8 @@
 module.exports = {
   apps: [
     {
-      name: 'demo-nest',
-      script: 'dist/main.js',
+      name: 'eco-back',
+      script: 'dist/src/main.js',
     },
   ],
 };
