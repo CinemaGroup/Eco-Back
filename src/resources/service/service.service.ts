@@ -150,6 +150,7 @@ export class ServiceService {
 				price: input.price,
 				imagePath: input.imagePath,
 				groups: {
+					disconnect: service.groups.map((item) => ({ id: item.id })),
 					connect: input.groups.map((item) => ({ id: item.id })),
 				},
 				status: Status.PUBLISHED,

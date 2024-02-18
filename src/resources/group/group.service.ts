@@ -5,13 +5,12 @@ import {
 } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { Sort, Status } from 'src/global/enums/query.enum'
-import { QueryInput } from 'src/global/inputs/query.input'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { generateSlug } from 'src/utils/generateSlug'
 import { PaginationService } from '../pagination/pagination.service'
 import { groupInclude } from './includes/group.include'
-import { UpdateGroupInput } from './inputs/update-group.input'
 import { QueryGroupInput } from './inputs/query-group.input'
+import { UpdateGroupInput } from './inputs/update-group.input'
 
 @Injectable()
 export class GroupService {
@@ -152,6 +151,7 @@ export class GroupService {
 				slug: generateSlug(input.name),
 				imagePath: input.imagePath,
 				categories: {
+					disconnect: group.categories.map((item) => ({ id: item.id })),
 					connect: input.categories.map((item) => ({ id: item.id })),
 				},
 				status: Status.PUBLISHED,

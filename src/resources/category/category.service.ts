@@ -176,6 +176,7 @@ export class CategoryService {
 				backgroundColor: input.backgroundColor,
 				priceFrom: input.priceFrom,
 				rubrics: {
+					disconnect: category.rubrics.map(item => ({id: item.id})),
 					connect: input.rubrics.map((item) => ({ id: item.id })),
 				},
 				status: Status.PUBLISHED,
