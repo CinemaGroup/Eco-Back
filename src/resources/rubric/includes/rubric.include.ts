@@ -6,6 +6,9 @@ export const rubricInclude: Prisma.RubricInclude = {
 
 export const rubricCatalogInclude: Prisma.RubricInclude = {
 	categories: {
+		orderBy: {
+			createdAt: 'asc',
+		},
 		include: {
 			groups: {
 				include: {
