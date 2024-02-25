@@ -10,6 +10,7 @@ import {
 } from 'fs-extra'
 import { extname } from 'path'
 import { PrismaService } from 'src/prisma/prisma.service'
+import { pipeline } from 'stream/promises'
 import { CreateFolderInput } from './inputs/create-folder.input'
 import { EditFileOrFolderNameInput } from './inputs/edit-file-or-folder-name.input'
 import { UploadFilesInput } from './inputs/upload-files.input'
@@ -60,23 +61,19 @@ export class StorageService {
 		try {
 			const uploadFolder = `${path}/${folderPath}`
 
-			const resolvedData = await Promise.all(data)
+			for await (const file of data) {
+				const { createReadStream, filename } = file
+				const readStream = createReadStream()
 
-			for (const file of resolvedData) {
-				await new Promise<void>((resolve, reject) => {
-					const writeStream = createWriteStream(
-						`${uploadFolder}/${file.filename}`
-					)
-					file.createReadStream().pipe(writeStream)
-					writeStream.on('finish', () => {
-						resolve()
-					})
-					writeStream.on('error', reject)
-				})
+				await pipeline(
+					readStream,
+					createWriteStream(`${uploadFolder}/${filename}`)
+				)
 			}
+
 			return 'Files uploaded successfully'
 		} catch (error) {
-			console.error(error)
+			console.error('Upload error:', error)
 			return `Upload error: ${error}`
 		}
 	}

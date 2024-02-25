@@ -24,7 +24,12 @@ export class StorageResolver {
 	async uploadFiles(
 		@Args('data', { type: () => UploadFilesInput }) input: UploadFilesInput
 	) {
-		return this.storageService.uploadFiles(input)
+		try {
+			return await this.storageService.uploadFiles(input)
+		} catch (error) {
+			console.error(error)
+			return `Upload error: ${error}`
+		}
 	}
 
 	@Auth(UserRole.ADMIN)
